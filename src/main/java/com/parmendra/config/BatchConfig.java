@@ -18,6 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.task.AsyncTaskExecutor;
+import org.springframework.core.task.SimpleAsyncTaskExecutor;
+import org.springframework.core.task.TaskExecutor;
 
 @EnableBatchProcessing
 @Configuration
@@ -86,6 +89,7 @@ public class BatchConfig {
                 .reader(fileItemReader())
                 .processor(processor())
                 .writer(writer())
+               .taskExecutor(taskExecutor()) // Optional Steps for Batch processing
                 .build();
     }
 
@@ -95,6 +99,15 @@ public class BatchConfig {
 
         return jobBuilderFactory.get("Job-Runner")
                 .flow(step1()).end().build();
+    }
+
+    // Enable the Batch processing with 10 threads parallel
+    // Optional Steps
+    @Bean
+    public TaskExecutor taskExecutor(){
+        SimpleAsyncTaskExecutor asyncTaskExecutor = new SimpleAsyncTaskExecutor();
+        asyncTaskExecutor.setConcurrencyLimit(10);
+        return  asyncTaskExecutor;
     }
 
 }

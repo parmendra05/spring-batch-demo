@@ -9,11 +9,12 @@ import org.springframework.batch.core.repository.JobExecutionAlreadyRunningExcep
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/jobs/")
+@RequestMapping("api/jobs/")
 public class CustomersController {
 
     @Autowired
@@ -22,6 +23,7 @@ public class CustomersController {
     @Autowired
     private JobLauncher jobLauncher;
 
+    @GetMapping("/start")
     public String inportCsvToDBjob() throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException {
          JobParameters jobParameters = new JobParametersBuilder()
                  .addLong("started at ", System.currentTimeMillis())
